@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { todoService } from '../services/todoService';
-import Header from '../components/Layout/Header';
-import TodoListCard from '../components/Todo/TodoListCard';
+import Header from '../components/layout/Header';
+import TodoListCard from '../components/todo/TodoListCard';
 import { Plus, Search } from 'lucide-react';
-import TodoItemCard from '../components/Todo/TodoItemCard';
+import TodoItemCard from '../components/todo/TodoItemCard';
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 

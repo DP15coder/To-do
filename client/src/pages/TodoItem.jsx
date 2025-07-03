@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { todoService } from '../services/todoService';
-import Header from '../components/Layout/Header';
-import TodoItemCard from '../components/Todo/TodoItemCard';
-import CreateTodoForm from '../components/Todo/CreateTodoForm';
+import Header from '../components/layout/Header';
+import TodoItemCard from '../components/todo/TodoItemCard';
+import CreateTodoForm from '../components/todo/CreateTodoForm';
 import { ArrowLeft, Search, Filter } from 'lucide-react';
 
 const TodoItems = () => {
