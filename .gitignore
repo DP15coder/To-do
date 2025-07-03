@@ -1,0 +1,23 @@
+# Node dependencies
+node_modules/
+
+# Build files
+build/
+dist/
+
+# Environment variables
+.env
+.env.local
+
+# OS-specific crap
+.DS_Store
+
+# Log files
+*.log
+
+# IDE folders
+.vscode/
+.idea/
+
+# React build (if building frontend)
+frontend/build/
