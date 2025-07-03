@@ -8,10 +8,7 @@ const app = express();
 app.use(express.json());
 const PORT = process.env.PORT;
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  process.env.FRONTEND_HOST
-];
+const allowedOrigins = process.env.FRONTEND_HOSTS.split("|")
 
 app.use(cors({
   origin: function (origin, callback) {
