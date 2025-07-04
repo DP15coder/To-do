@@ -132,7 +132,7 @@ A full-stack todo application built with React and Node.js that allows users to 
    MONGO_URI=mongodb://localhost:27017/todoapp
    JWT_SECRET=your-super-secret-jwt-key
    FRONTEND_HOSTS_DEV=http://localhost:5173|http://localhost:8080
-   FRONTEND_HOSTS=https://to-253v3t806-draksha-patles-projects.vercel.app/auth
+   FRONTEND_HOSTS=https://to-do-git-main-draksha-patles-projects.vercel.app/auth
    PORT=8080
    ```
 
@@ -153,6 +153,7 @@ A full-stack todo application built with React and Node.js that allows users to 
 6. **Access the application**
    - Frontend: http://localhost:5173
    - Backend API: http://localhost:8080
+   - Deployed URL https://to-do-git-main-draksha-patles-projects.vercel.app/auth
 
 ## API Endpoints
 
