@@ -50,9 +50,9 @@ const TodoListCard = ({ list, onEdit, onDelete, onSelect }) => {
         <>
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <h5 className="text-base font-semibold text-gray-900 break-words overflow-hidden max-h-[3.5rem] leading-snug">
-                {list.name}
-              </h5>
+             <h4 className="font-medium break-all break-words">
+  {list.name}
+</h4>
             </div>
             <div className="flex space-x-2">
               <button
