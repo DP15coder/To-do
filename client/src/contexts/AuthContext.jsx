@@ -1,11 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authService } from '../services/authService';
-const AuthContext = createContext({ "user": null, "login": null, "logout": null, "register": null });
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { authService } from "../services/authService";
+const AuthContext = createContext({
+  user: null,
+  login: null,
+  logout: null,
+  register: null,
+});
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === null) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -15,14 +20,15 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
-      authService.verifyToken(token)
+      authService
+        .verifyToken(token)
         .then((userData) => {
           setUser(userData);
         })
         .catch(() => {
-          localStorage.removeItem('token');
+          localStorage.removeItem("token");
         })
         .finally(() => {
           setLoading(false);
@@ -32,26 +38,24 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const login = async (email, password) => {
+    const response = await authService.login(email, password);
+    console.log(response, "what is the full response");
+    const { token, ...user } = response;
 
-const login = async (email, password) => {
-  const response = await authService.login(email, password);
-  console.log(response, "what is the full response");
-     const { token, ...user } = response;
-
-  localStorage.setItem('token', token);
-  setUser(user);
-};
-
+    localStorage.setItem("token", token);
+    setUser(user);
+  };
 
   const register = async (name, email, password) => {
-      const response = await authService.register(name, email, password);
-     const { token, ...user } = response;
-    localStorage.setItem('token', token);
+    const response = await authService.register(name, email, password);
+    const { token, ...user } = response;
+    localStorage.setItem("token", token);
     setUser(user);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setUser(null);
   };
 
@@ -61,8 +65,7 @@ const login = async (email, password) => {
     login,
     register,
     logout,
-    setUser
-
+    setUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

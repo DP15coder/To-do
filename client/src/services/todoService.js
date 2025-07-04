@@ -1,17 +1,16 @@
-
-import { createApiWithAuth } from './axiosInstance';
+import { createApiWithAuth } from "./axiosInstance";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = createApiWithAuth(`${BASE_URL}/api`);
 export const todoService = {
   // Todo Lists
   getTodoLists: async () => {
-    const response = await api.get('/todos');
+    const response = await api.get("/todos");
     return response.data;
   },
 
   createTodoList: async (name) => {
-    const response = await api.post('/todos', { name });
+    const response = await api.post("/todos", { name });
     return response.data;
   },
 
@@ -30,8 +29,11 @@ export const todoService = {
     return response.data;
   },
 
-  createTodoItem: async (todoId, title, description = '') => {
-    const response = await api.post(`/todos/${todoId}/items`, { title, description });
+  createTodoItem: async (todoId, title, description = "") => {
+    const response = await api.post(`/todos/${todoId}/items`, {
+      title,
+      description,
+    });
     return response.data;
   },
 
@@ -44,4 +46,3 @@ export const todoService = {
     await api.delete(`/todos/${todoId}/items/${itemId}`);
   },
 };
-

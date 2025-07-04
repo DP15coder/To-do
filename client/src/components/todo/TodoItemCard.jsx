@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { Edit, Trash2, Check, Clock } from 'lucide-react';
-import toast, { Toaster } from 'react-hot-toast';
+import React, { useState } from "react";
+import { Edit, Trash2, Check, Clock } from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
 
-const TodoItemCard = ({ item, onUpdate, onDelete }) => {
+const TodoItemCard = ({ item, onUpdate, onDelete, clearError }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(item.title);
-  const [editDescription, setEditDescription] = useState(item.description || '');
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
@@ -17,12 +16,8 @@ const TodoItemCard = ({ item, onUpdate, onDelete }) => {
 
   const handleEditCancel = () => {
     setEditTitle(item.title);
-    setEditDescription(item.description || '');
     setIsEditing(false);
-  };
-
-  const toggleCompleted = () => {
-    onUpdate(item._id, { completed: !item.completed });
+    if (clearError) clearError();
   };
 
   const confirmDelete = () => {
@@ -49,14 +44,14 @@ const TodoItemCard = ({ item, onUpdate, onDelete }) => {
           </span>
         </span>
       ),
-      { duration: 5000 }
+      { duration: 5000 },
     );
   };
 
   return (
     <div
       className={`bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-all ${
-        item.completed ? 'opacity-75' : ''
+        item.completed ? "opacity-75" : ""
       }`}
     >
       <Toaster position="top-center" />
@@ -66,13 +61,19 @@ const TodoItemCard = ({ item, onUpdate, onDelete }) => {
           <input
             type="text"
             value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
+            onChange={(e) => {
+              setEditTitle(e.target.value);
+              if (clearError) clearError();
+            }}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Todo title"
             autoFocus
           />
           <div className="flex space-x-2">
-            <button type="submit" className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+            <button
+              type="submit"
+              className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+            >
               Save
             </button>
             <button
@@ -87,27 +88,19 @@ const TodoItemCard = ({ item, onUpdate, onDelete }) => {
       ) : (
         <>
           <div className="flex items-start space-x-3">
-            <button
-              onClick={toggleCompleted}
-              className={`mt-1 w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
-                item.completed ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-green-500'
-              }`}
-            >
-              {item.completed && <Check className="w-3 h-3" />}
-            </button>
-
+            
             <div className="flex-1">
-              <h4 className={`font-medium ${item.completed ? 'text-gray-500 line-through' : 'text-gray-900'}`}>
+              <h4
+                className={`font-medium ${item.completed ? "text-gray-500 line-through" : "text-gray-900"}`}
+              >
                 {item.title}
               </h4>
-              {item.description && (
-                <p className={`text-sm mt-1 ${item.completed ? 'text-gray-400' : 'text-gray-600'}`}>
-                  {item.description}
-                </p>
-              )}
+              
               <div className="flex items-center text-xs text-gray-400 mt-2">
                 <Clock className="w-3 h-3 mr-1" />
-                <span>Created {new Date(item.created_at).toLocaleDateString()}</span>
+                <span>
+                  Created {new Date(item.created_at).toLocaleDateString()}
+                </span>
               </div>
             </div>
 

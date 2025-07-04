@@ -5,28 +5,52 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const todoRoutes = require('./routes/todoRoutes');
 const app = express();
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
 app.use(express.json());
-const PORT = process.env.PORT;
+// ################################ CORS setup
+const allowedOrigins = process.env.FRONTEND_HOSTS.split('|');
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  })
+);
+// ################################
 
-const allowedOrigins = process.env.FRONTEND_HOSTS.split("|")
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+//################### Swagger setup
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Todo Builder',
+      version: '1.0.0',
+    },
   },
-  credentials: true,
-}));
+  apis: ['./routes/*.js'],
+};
 
-app.use('/api/auth', authRoutes);
-app.use('/api/todos', todoRoutes);
-// app.use(errorHandler);
+const specs = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+// #################################
 
+// ############################# Routes
+const apiV1 = express.Router();
+app.use('/api', apiV1);
+
+apiV1.use('/auth', authRoutes);
+apiV1.use('/todos', todoRoutes);
+// #################################
+
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   connectDB();
-  console.log(`Server is listening on port ${PORT}`)
-}
-);
+  console.log(`Server is listening on port ${PORT}`);
+});

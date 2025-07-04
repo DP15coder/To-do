@@ -1,28 +1,28 @@
-import  { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-const LoginForm = ({ onSwitchToRegister }) => { 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const LoginForm = ({ onSwitchToRegister }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const isloggin = await login(email, password); 
-      console.log(isloggin,"isloggin")
-      navigate('/');
+      const isloggin = await login(email, password);
+      console.log(isloggin, "isloggin");
+      navigate("/");
     } catch (err) {
-      setError(err?.response?.data?.message || 'Login failed');
+      setError(err?.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -36,8 +36,12 @@ const LoginForm = ({ onSwitchToRegister }) => {
             <div className="mx-auto h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
               <LogIn className="h-6 w-6 text-blue-600" />
             </div>
-            <h2 className="mt-4 text-3xl font-bold text-gray-900">Welcome back</h2>
-            <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
+            <h2 className="mt-4 text-3xl font-bold text-gray-900">
+              Welcome back
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Sign in to your account
+            </p>
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -49,7 +53,10 @@ const LoginForm = ({ onSwitchToRegister }) => {
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Email address
                 </label>
                 <div className="mt-1 relative">
@@ -70,7 +77,10 @@ const LoginForm = ({ onSwitchToRegister }) => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Password
                 </label>
                 <div className="mt-1 relative">
@@ -80,7 +90,7 @@ const LoginForm = ({ onSwitchToRegister }) => {
                   <input
                     id="password"
                     name="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -110,7 +120,7 @@ const LoginForm = ({ onSwitchToRegister }) => {
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                'Sign in'
+                "Sign in"
               )}
             </button>
 

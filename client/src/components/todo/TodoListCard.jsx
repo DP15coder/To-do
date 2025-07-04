@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Edit, Trash2, Calendar, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Edit, Trash2, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 const TodoListCard = ({ list, onEdit, onDelete, onSelect }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(list.name);
@@ -50,17 +50,9 @@ const TodoListCard = ({ list, onEdit, onDelete, onSelect }) => {
         <>
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              {/* <h3 className="text-lg font-semibold text-gray-900 mb-2">{list.name}</h3> */}
-
               <h5 className="text-base font-semibold text-gray-900 break-words overflow-hidden max-h-[3.5rem] leading-snug">
                 {list.name}
               </h5>
-
-
-              {/* <div className="flex items-center text-sm text-gray-500">
-                <Calendar className="w-4 h-4 mr-1" />
-                <span>Created {new Date(list.created_at).toLocaleDateString()}</span>
-              </div> */}
             </div>
             <div className="flex space-x-2">
               <button
@@ -84,7 +76,9 @@ const TodoListCard = ({ list, onEdit, onDelete, onSelect }) => {
             onClick={() => navigate(`/todos/${list._id}`)}
             className="mt-4 w-full flex items-center justify-between px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors text-left"
           >
-            <span className="text-sm font-medium text-gray-700">View items</span>
+            <span className="text-sm font-medium text-gray-700">
+              View items
+            </span>
             <ChevronRight className="w-4 h-4 text-gray-400" />
           </button>
         </>

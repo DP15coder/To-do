@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { Plus, X } from 'lucide-react';
+import { useState } from "react";
+import { Plus, X } from "lucide-react";
 
 const CreateTodoForm = ({ onSubmit, loading = false }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (title.trim()) {
       onSubmit(title.trim(), description.trim());
-      setTitle('');
-      setDescription('');
+      setTitle("");
+      setDescription("");
       setIsOpen(false);
     }
   };
 
   const handleCancel = () => {
-    setTitle('');
-    setDescription('');
+    setTitle("");
+    setDescription("");
     setIsOpen(false);
   };
 
@@ -35,7 +35,10 @@ const CreateTodoForm = ({ onSubmit, loading = false }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-lg p-4 space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white border border-gray-200 rounded-lg p-4 space-y-4"
+    >
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium text-gray-900">Add SubTask</h3>
         <button
@@ -57,13 +60,6 @@ const CreateTodoForm = ({ onSubmit, loading = false }) => {
           autoFocus
           required
         />
-        {/* <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-          rows={2}
-          placeholder="Description (optional)" */}
-        {/* /> */}
       </div>
 
       <div className="flex space-x-2">
@@ -75,7 +71,7 @@ const CreateTodoForm = ({ onSubmit, loading = false }) => {
           {loading ? (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           ) : (
-            'Add Todo'
+            "Add Todo"
           )}
         </button>
         <button

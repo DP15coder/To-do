@@ -1,86 +1,125 @@
-import React, { useState } from 'react';
-import { User, Mail, Lock, Eye, EyeOff, UserPlus } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-
+import { useState } from "react";
+import { User, Mail, Lock, Eye, EyeOff, UserPlus } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import {
+  validateName,
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword,
+} from "../../utils/validation";
 const RegisterForm = ({ onSwitchToLogin }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { register } = useAuth();
-
-  function validateName(name) {
-    const regex = /^[a-zA-Z0-9_]{3,20}$/;
-    return regex.test(name);
-  }
-
-  function validateEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  }
-
-  function validatePassword(password) {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(password);
-  }
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
-    if (!validateName(name)) {
-      setError('Name must be 3-20 characters and contain only letters, numbers, or underscores.');
+    const nameCheck = validateName(name);
+    if (!nameCheck.valid) {
+      switch (nameCheck.reason) {
+        case "empty":
+          setError("Name is required.");
+          break;
+        case "not-two-parts":
+          setError("Please enter both first and last names .");
+          break;
+        case "invalid-first":
+          setError("First name must be 3–30 letters, no symbols or numbers.");
+          break;
+        case "invalid-last":
+          setError("Last name must be 3–30 letters, no symbols or numbers.");
+          break;
+        default:
+          setError("Invalid name format.");
+      }
       setLoading(false);
       return;
     }
 
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address.');
+    const emailCheck = validateEmail(email);
+    if (!emailCheck.valid) {
+      switch (emailCheck.reason) {
+        case "empty":
+          setError("Email is required.");
+          break;
+        case "invalid":
+          setError("Please enter a valid email address.");
+          break;
+        default:
+          setError("Invalid email.");
+      }
       setLoading(false);
       return;
     }
 
-    if (!validatePassword(password)) {
-      setError('Password must be at least 8 characters long, include uppercase, lowercase, number, and a special character.');
+    const passwordCheck = validatePassword(password);
+    if (!passwordCheck.valid) {
+      switch (passwordCheck.reason) {
+        case "empty":
+          setError("Password is required.");
+          break;
+        case "weak":
+          setError(
+            "Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.",
+          );
+          break;
+        default:
+          setError("Invalid password.");
+      }
       setLoading(false);
       return;
     }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
+    const confirmCheck = validateConfirmPassword(password, confirmPassword);
+    if (!confirmCheck.valid) {
+      switch (confirmCheck.reason) {
+        case "empty":
+          setError("Please confirm your password.");
+          break;
+        case "mismatch":
+          setError("Passwords do not match.");
+          break;
+        default:
+          setError("Password confirmation failed.");
+      }
       setLoading(false);
       return;
     }
-
     try {
       await register(name, email, password);
-      navigate('/');
+      navigate("/");
     } catch (err) {
-      setError(err?.response?.data?.message || 'Signup failed');
+      setError(err?.response?.data?.message || "Signup failed");
     } finally {
       setLoading(false);
     }
   };
 
-  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-emerald-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center">
             <div className="mx-auto h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
               <UserPlus className="h-6 w-6 text-blue-600" />
             </div>
-            <h2 className="mt-4 text-3xl font-bold text-gray-900">Create account</h2>
-            <p className="mt-2 text-sm text-gray-600">Join us to organize your todos</p>
+            <h2 className="mt-4 text-3xl font-bold text-gray-900">
+              Create account
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Join us to organize your todos
+            </p>
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -92,7 +131,10 @@ const RegisterForm = ({ onSwitchToLogin }) => {
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Full name
                 </label>
                 <div className="mt-1 relative">
@@ -113,7 +155,10 @@ const RegisterForm = ({ onSwitchToLogin }) => {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Email address
                 </label>
                 <div className="mt-1 relative">
@@ -134,7 +179,10 @@ const RegisterForm = ({ onSwitchToLogin }) => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Password
                 </label>
                 <div className="mt-1 relative">
@@ -144,7 +192,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                   <input
                     id="password"
                     name="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -166,7 +214,10 @@ const RegisterForm = ({ onSwitchToLogin }) => {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Confirm password
                 </label>
                 <div className="mt-1 relative">
@@ -176,7 +227,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
+                    type={showConfirmPassword ? "text" : "password"}
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -206,7 +257,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                'Create account'
+                "Create account"
               )}
             </button>
 

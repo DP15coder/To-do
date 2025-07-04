@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { todoService } from '../services/todoService';
-import Header from '../components/layout/Header';
-import TodoListCard from '../components/todo/TodoListCard';
-import { Plus, Search } from 'lucide-react';
-import TodoItemCard from '../components/todo/TodoItemCard';
-import { useNavigate } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { todoService } from "../services/todoService";
+import Header from "../components/layout/Header";
+import TodoListCard from "../components/todo/TodoListCard";
+import { Plus, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const Dashboard = () => {
   const [todoLists, setTodoLists] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [newListName, setNewListName] = useState('');
+  const [newListName, setNewListName] = useState("");
   const [creating, setCreating] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [editErrorMsg, setEditErrorMsg] = useState("");
   const navigate = useNavigate();
 
-  console.log("hiii");
   useEffect(() => {
     loadTodoLists();
   }, []);
@@ -26,59 +26,74 @@ const Dashboard = () => {
       const lists = await todoService.getTodoLists();
       setTodoLists(lists);
     } catch (error) {
-      console.error('Failed to load todo lists:', error);
+      console.error("Failed to load todo lists:", error);
     } finally {
       setLoading(false);
     }
   };
-
-
 
   const handleCreateList = async (e) => {
     e.preventDefault();
     if (!newListName.trim()) return;
 
     setCreating(true);
+    setErrorMsg("");
     try {
       const newList = await todoService.createTodoList(newListName.trim());
       setTodoLists((prev) => [newList, ...prev]);
-      setNewListName('');
+      setNewListName("");
       setShowCreateForm(false);
-
 
       navigate(`/todos/${newList._id}`);
     } catch (error) {
-      console.error('Failed to create list:', error);
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrorMsg(error.response.data.errors.map((e) => e.msg).join(". "));
+      } else if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setErrorMsg(error.response.data.message);
+      } else {
+        setErrorMsg("Failed to create todo list.");
+      }
     } finally {
       setCreating(false);
     }
   };
 
-
   const handleEditList = async (id, name) => {
+    setEditErrorMsg("");
     try {
       const updatedList = await todoService.updateTodoList(id, name);
       setTodoLists((prev) =>
-        prev.map((list) => (list._id === id ? updatedList : list))
+        prev.map((list) => (list._id === id ? updatedList : list)),
       );
     } catch (error) {
-      console.error('Failed to update list:', error);
+      if (error.response && error.response.data && error.response.data.errors) {
+        setEditErrorMsg(error.response.data.errors.map((e) => e.msg).join(". "));
+      } else if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setEditErrorMsg(error.response.data.message);
+      } else {
+        setEditErrorMsg("Failed to update todo list.");
+      }
     }
   };
-
 
   const handleDeleteList = async (id) => {
     try {
       await todoService.deleteTodoList(id);
       setTodoLists((prev) => prev.filter((list) => list._id !== id));
-      toast.success('List deleted');
+      toast.success("List deleted");
     } catch (error) {
-      console.error('Failed to delete list:', error);
-      toast.error('Failed to delete');
+      console.error("Failed to delete list:", error);
+      toast.error("Failed to delete");
     }
   };
-
-
 
   const confirmDeleteList = (id) => {
     toast((t) => (
@@ -105,20 +120,16 @@ const Dashboard = () => {
     ));
   };
 
-
-
-
   const filteredLists = todoLists.filter((list) =>
-    list.name.toLowerCase().includes(searchTerm.toLowerCase())
+    list.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  console.log(filteredLists, "what isinside filterdLists")
+  console.log(filteredLists, "what isinside filterdLists");
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        {/* <TodoItemCard/> */}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-center h-64">
@@ -138,7 +149,9 @@ const Dashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">My Todo Lists</h1>
+          <h1 className="text-2xl font-semi-bold text-gray-900 mb-4">
+            Todo Builder
+          </h1>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
@@ -167,27 +180,22 @@ const Dashboard = () => {
         {showCreateForm && (
           <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <form onSubmit={handleCreateList}>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Create New Todo List</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Create New Todo List
+              </h3>
               <div className="flex gap-3">
-                {/* <input
-                  type="text"
-                  value={newListName}
-                  onChange={(e) => setNewListName(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter list name..."
-                  autoFocus
-                  required
-                /> */}
-
                 <input
                   type="text"
                   value={newListName}
-                  onChange={(e) => setNewListName(e.target.value.slice(0, 50))} // enforce limit
-                  maxLength={250} // optional HTML constraint
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => {
+                    setNewListName(e.target.value.slice(0, 150));
+                    setErrorMsg("");
+                  }}
+                  maxLength={150}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 break-words truncate"
                   placeholder="Enter list name..."
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
                 />
-
                 <button
                   type="submit"
                   disabled={creating || !newListName.trim()}
@@ -196,20 +204,26 @@ const Dashboard = () => {
                   {creating ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   ) : (
-                    'Create'
+                    "Create"
                   )}
                 </button>
                 <button
                   type="button"
                   onClick={() => {
                     setShowCreateForm(false);
-                    setNewListName('');
+                    setNewListName("");
+                    setErrorMsg("");
                   }}
                   className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
                 >
                   Cancel
                 </button>
               </div>
+              {errorMsg && (
+                <div className="mt-2 mb-2 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
+                  {errorMsg}
+                </div>
+              )}
             </form>
           </div>
         )}
@@ -220,12 +234,12 @@ const Dashboard = () => {
               <Plus className="h-12 w-12 text-gray-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {searchTerm ? 'No lists found' : 'No todo lists yet'}
+              {searchTerm ? "No lists found" : "No todo lists yet"}
             </h3>
             <p className="text-gray-600 mb-4">
               {searchTerm
-                ? 'Try adjusting your search terms.'
-                : 'Create your first todo list to get organized.'}
+                ? "Try adjusting your search terms."
+                : "Create your first todo list to get organized."}
             </p>
             {!searchTerm && (
               <button
@@ -248,9 +262,14 @@ const Dashboard = () => {
                 onSelect={(list) => {
                   window.location.hash = `/todos/${list._id}`;
                 }}
+                style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
               />
-
             ))}
+          </div>
+        )}
+        {editErrorMsg && (
+          <div className="mt-2 mb-2 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
+            {editErrorMsg}
           </div>
         )}
       </div>

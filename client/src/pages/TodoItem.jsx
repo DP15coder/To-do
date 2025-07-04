@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { todoService } from '../services/todoService';
-import Header from '../components/layout/Header';
-import TodoItemCard from '../components/todo/TodoItemCard';
-import CreateTodoForm from '../components/todo/CreateTodoForm';
-import { ArrowLeft, Search, Filter } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { todoService } from "../services/todoService";
+import Header from "../components/layout/Header";
+import TodoItemCard from "../components/todo/TodoItemCard";
+import CreateTodoForm from "../components/todo/CreateTodoForm";
+import { ArrowLeft, Search, Filter } from "lucide-react";
 
 const TodoItems = () => {
   const { todoId } = useParams();
@@ -12,9 +12,10 @@ const TodoItems = () => {
   const [todoList, setTodoList] = useState(null);
   const [todoItems, setTodoItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("all");
   const [creating, setCreating] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     if (todoId) {
@@ -33,7 +34,7 @@ const TodoItems = () => {
       const currentList = lists.find((list) => list._id === todoId);
       setTodoList(currentList || null);
     } catch (error) {
-      console.error('Failed to load todo items:', error);
+      console.error("Failed to load todo items:", error);
     } finally {
       setLoading(false);
     }
@@ -43,57 +44,82 @@ const TodoItems = () => {
     if (!todoId) return;
 
     setCreating(true);
+    setErrorMsg("");
     try {
-      const newItem = await todoService.createTodoItem(todoId, title, description);
+      const newItem = await todoService.createTodoItem(
+        todoId,
+        title,
+        description
+      );
       setTodoItems((prev) => [newItem, ...prev]);
     } catch (error) {
-      console.error('Failed to create todo item:', error);
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrorMsg(error.response.data.errors.map((e) => e.msg).join(". "));
+      } else if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setErrorMsg(error.response.data.message);
+      } else {
+        setErrorMsg("Failed to create todo item.");
+      }
     } finally {
       setCreating(false);
     }
   };
 
   const handleUpdateItem = async (itemId, updates) => {
+    console.log(updates, "whatis in updates");
     if (!todoId) return;
 
     try {
-      const updatedItem = await todoService.updateTodoItem(todoId, itemId, updates);
+      const updatedItem = await todoService.updateTodoItem(
+        todoId,
+        itemId,
+        updates
+      );
+
       setTodoItems((prev) =>
         prev.map((item) => (item._id === itemId ? updatedItem : item))
       );
     } catch (error) {
-      console.error('Failed to update todo item:', error);
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrorMsg(error.response.data.errors.map((e) => e.msg).join(". "));
+      } else if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setErrorMsg(error.response.data.message);
+      } else {
+        setErrorMsg("Failed to Update todo item.");
+      }
     }
   };
+  console.log(todoItems, "what isinsdie setTodoItems");
 
   const handleDeleteItem = async (itemId) => {
-      if (!todoId) return;
+    if (!todoId) return;
 
     try {
       await todoService.deleteTodoItem(todoId, itemId);
       setTodoItems((prev) => prev.filter((item) => item._id !== itemId));
-          // toast.success('item deleted');
-
+      // toast.success('item deleted');
     } catch (error) {
-      console.error('Failed to delete todo item:', error);
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrorMsg(error.response.data.errors.map((e) => e.msg).join(". "));
+      } else if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setErrorMsg(error.response.data.message);
+      } else {
+        setErrorMsg("Failed to delete todo item:", error);
+      }
     }
   };
-
-  const filteredItems = todoItems.filter((item) => {
-    const matchesSearch =
-      item.title.toLowerCase().includes(searchTerm.toLowerCase())
-      // (item.description?.toLowerCase() || '').includes(searchTerm.toLowerCase());
-
-    const matchesFilter =
-      filter === 'all' ||
-      (filter === 'active' && !item.completed) ||
-      (filter === 'completed' && item.completed);
-
-    return matchesSearch && matchesFilter;
-  });
-
-  const completedCount = todoItems.filter((item) => item.completed).length;
-  const activeCount = todoItems.length - completedCount;
 
   if (loading) {
     return (
@@ -114,10 +140,14 @@ const TodoItems = () => {
         <Header />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center py-12">
-            <h2 className="text-xl font-semibold text-gray-900">List not found</h2>
-            <p className="text-gray-600 mt-2">The todo list you're looking for doesn't exist.</p>
+            <h2 className="text-xl font-semibold text-gray-900">
+              List not found
+            </h2>
+            <p className="text-gray-600 mt-2">
+              The todo list you're looking for doesn't exist.
+            </p>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Back to Dashboard
@@ -135,7 +165,7 @@ const TodoItems = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -144,10 +174,9 @@ const TodoItems = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{todoList.name}</h1>
-              {/* <p className="text-gray-600 mt-1">
-                {activeCount} active, {completedCount} completed
-              </p> */}
+              <h1 className="text-3xl font-bold text-gray-900">
+                {todoList.name}
+              </h1>
             </div>
           </div>
         </div>
@@ -155,25 +184,34 @@ const TodoItems = () => {
         <div className="space-y-4">
           <CreateTodoForm onSubmit={handleCreateItem} loading={creating} />
 
-          {filteredItems.length === 0 ? (
+          {errorMsg && (
+            <div className="mt-2 mb-4 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
+              {errorMsg}
+            </div>
+          )}
+
+          {todoItems.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {searchTerm || filter !== 'all' ? 'No todos found' : 'No todos yet'}
+                {searchTerm || filter !== "all"
+                  ? "No todos found"
+                  : "No todo items yet"}
               </h3>
               <p className="text-gray-600">
-                {searchTerm || filter !== 'all'
-                  ? 'Try adjusting your search or filter.'
-                  : 'Add your first todo to get started.'}
+                {searchTerm || filter !== "all"
+                  ? "Try adjusting your search or filter."
+                  : "Add your first todo item  to get started."}
               </p>
             </div>
           ) : (
             <div className="space-y-3">
-              {filteredItems.map((item) => (
+              {todoItems.map((item) => (
                 <TodoItemCard
                   key={item._id}
                   item={item}
                   onUpdate={handleUpdateItem}
                   onDelete={handleDeleteItem}
+                  clearError={() => setErrorMsg("")}
                 />
               ))}
             </div>
