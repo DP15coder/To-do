@@ -153,6 +153,7 @@ A full-stack todo application built with React and Node.js that allows users to 
 6. **Access the application**
    - Frontend: http://localhost:5173
    - Backend API: http://localhost:8080
+   - Deployed URL https://to-do-git-main-draksha-patles-projects.vercel.app/auth
 
 ## API Endpoints
 
