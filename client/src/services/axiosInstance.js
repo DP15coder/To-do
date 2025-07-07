@@ -8,7 +8,7 @@ export const createApiWithAuth = (baseURL) => {
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     } else {
-      console.warn("🚫 No token found in localStorage");
+      console.warn("No token found in localStorage");
     }
     return config;
   });

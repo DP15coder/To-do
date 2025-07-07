@@ -112,6 +112,7 @@ const TodoItemCard = ({ item, onUpdate, onDelete, clearError }) => {
               >
                 <Edit className="w-4 h-4" />
               </button>
+              
               <button
                 onClick={confirmDelete}
                 className="p-1 text-gray-400 hover:text-red-600 transition-colors"

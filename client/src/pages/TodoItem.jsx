@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { todoService } from "../services/todoService";
 import Header from "../components/layout/Header";
 import TodoItemCard from "../components/todo/TodoItemCard";
-import CreateTodoForm from "../components/todo/CreateTodoForm";
-import { ArrowLeft, Search, Filter } from "lucide-react";
+import CreateTodoForm from "../components/todo/CreateTodoItem";
+import { ArrowLeft, Search, Filter, Edit } from "lucide-react";
 
 const TodoItems = () => {
   const { todoId } = useParams();
@@ -16,27 +16,47 @@ const TodoItems = () => {
   const [filter, setFilter] = useState("all");
   const [creating, setCreating] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [listTitle, setListTitle] = useState(todoList?.name || "");
+  const [titleError, setTitleError] = useState("");
 
-  useEffect(() => {
-    if (todoId) {
-      loadTodoItems();
-    }
-  }, [todoId]);
+
+useEffect(() => {
+  if (todoId) {
+    loadTodoItems();
+  }
+}, [todoId]);
 
   const loadTodoItems = async () => {
-    if (!todoId) return;
+  if (!todoId) return;
+  try {
+    const items = await todoService.getTodoItems(todoId);
+    setTodoItems(items);
 
+    const lists = await todoService.getTodoLists();
+    const currentList = lists.find((list) => list._id === todoId);
+    setTodoList(currentList || null);
+    setListTitle(currentList?.name || "");
+  } catch (error) {
+    console.error("Failed to load todo items:", error);
+  } finally {
+    setLoading(false);
+  }
+
+  }
+
+  const handleTitleSave = async () => {
+    if (!listTitle.trim()) {
+      setTitleError("Title cannot be empty");
+      return;
+    }
     try {
-      const items = await todoService.getTodoItems(todoId);
-      setTodoItems(items);
-
-      const lists = await todoService.getTodoLists();
-      const currentList = lists.find((list) => list._id === todoId);
-      setTodoList(currentList || null);
+      await todoService.updateTodoList(todoList._id, listTitle.trim());
+      setEditingTitle(false);
+      setTitleError("");
+      setTodoList((prev) => ({ ...prev, name: listTitle.trim() }));
     } catch (error) {
-      console.error("Failed to load todo items:", error);
-    } finally {
-      setLoading(false);
+      setTitleError("Failed to update title it is too long");
     }
   };
 
@@ -172,13 +192,61 @@ const TodoItems = () => {
             <span>Back to Lists</span>
           </button>
 
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
                 {todoList.name}
               </h1>
             </div>
-          </div>
+          </div> */}
+
+          {editingTitle ? (
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={listTitle}
+                onChange={(e) => setListTitle(e.target.value)}
+                className="border px-2 py-1 rounded"
+                autoFocus
+              />
+              <button
+                onClick={handleTitleSave}
+                className="px-2 py-1 bg-blue-600 text-white rounded"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => {
+                  setEditingTitle(false);
+                  setListTitle(todoList.name);
+                }}
+                className="px-2 py-1 bg-gray-300 rounded"
+              >
+                Cancel
+              </button>
+              {titleError && (
+                <span className="text-red-500 text-sm ml-2">{titleError}</span>
+              )}
+            </div>
+          ) : (
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+              {todoList.name}
+              {/* <button
+                onClick={() => setEditingTitle(true)}
+                className="ml-2 text-blue-600 underline text-sm"
+              >
+                Edit
+              </button> */}
+
+              <button
+                onClick={() => setEditingTitle(true)}
+                className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                title="Edit list"
+              >
+                <Edit className="w-4 h-4" />
+              </button>
+            </h1>
+          )}
         </div>
 
         <div className="space-y-4">

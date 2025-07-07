@@ -32,10 +32,10 @@ const Dashboard = () => {
     }
   };
 
+
   const handleCreateList = async (e) => {
     e.preventDefault();
     if (!newListName.trim()) return;
-
     setCreating(true);
     setErrorMsg("");
     try {
@@ -43,7 +43,6 @@ const Dashboard = () => {
       setTodoLists((prev) => [newList, ...prev]);
       setNewListName("");
       setShowCreateForm(false);
-
       navigate(`/todos/${newList._id}`);
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors) {
@@ -88,7 +87,6 @@ const Dashboard = () => {
     try {
       await todoService.deleteTodoList(id);
       setTodoLists((prev) => prev.filter((list) => list._id !== id));
-      toast.success("List deleted");
     } catch (error) {
       console.error("Failed to delete list:", error);
       toast.error("Failed to delete");

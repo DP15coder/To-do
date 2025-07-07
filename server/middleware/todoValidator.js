@@ -8,7 +8,7 @@ const handleValidationErrors = (req, res, next) => {
     return res.status(400).json({
       message: 'Validation failed',
       errors: errors.array(),
-    });
+    }); 
   }
   next();
 };
@@ -35,7 +35,7 @@ exports.validateAddItem = [
     .optional()
     .isLength({ max: 300 })
     .withMessage('Description too long'),
-  handleValidationErrors,
+  handleValidationErrors, 
 ];
 
 

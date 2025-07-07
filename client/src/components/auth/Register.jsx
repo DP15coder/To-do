@@ -8,6 +8,8 @@ import {
   validatePassword,
   validateConfirmPassword,
 } from "../../utils/validation";
+import { VALIDATION_REASONS, VALIDATION_MESSAGES } from "../../utils/constant";
+
 const RegisterForm = ({ onSwitchToLogin }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -28,20 +30,20 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     const nameCheck = validateName(name);
     if (!nameCheck.valid) {
       switch (nameCheck.reason) {
-        case "empty":
-          setError("Name is required.");
+        case VALIDATION_REASONS.EMPTY:
+          setError(VALIDATION_MESSAGES.NAME_EMPTY);
           break;
-        case "not-two-parts":
-          setError("Please enter both first and last names .");
+        case VALIDATION_REASONS.NOT_TWO_PARTS:
+          setError(VALIDATION_MESSAGES.NAME_NOT_TWO_PARTS);
           break;
-        case "invalid-first":
-          setError("First name must be 3–30 letters, no symbols or numbers.");
+        case VALIDATION_REASONS.INVALID_FIRST:
+          setError(VALIDATION_MESSAGES.NAME_INVALID_FIRST);
           break;
-        case "invalid-last":
-          setError("Last name must be 3–30 letters, no symbols or numbers.");
+        case VALIDATION_REASONS.INVALID_LAST:
+          setError(VALIDATION_MESSAGES.NAME_INVALID_LAST);
           break;
         default:
-          setError("Invalid name format.");
+          setError(VALIDATION_MESSAGES.NAME_INVALID);
       }
       setLoading(false);
       return;
@@ -50,14 +52,14 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     const emailCheck = validateEmail(email);
     if (!emailCheck.valid) {
       switch (emailCheck.reason) {
-        case "empty":
-          setError("Email is required.");
+        case VALIDATION_REASONS.EMPTY:
+          setError(VALIDATION_MESSAGES.EMAIL_EMPTY);
           break;
-        case "invalid":
-          setError("Please enter a valid email address.");
+        case VALIDATION_REASONS.INVALID:
+          setError(VALIDATION_MESSAGES.EMAIL_INVALID);
           break;
         default:
-          setError("Invalid email.");
+          setError(VALIDATION_MESSAGES.EMAIL_GENERIC);
       }
       setLoading(false);
       return;
@@ -66,16 +68,14 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     const passwordCheck = validatePassword(password);
     if (!passwordCheck.valid) {
       switch (passwordCheck.reason) {
-        case "empty":
-          setError("Password is required.");
+        case VALIDATION_REASONS.EMPTY:
+          setError(VALIDATION_MESSAGES.PASSWORD_EMPTY);
           break;
-        case "weak":
-          setError(
-            "Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.",
-          );
+        case VALIDATION_REASONS.WEAK:
+          setError(VALIDATION_MESSAGES.PASSWORD_WEAK);
           break;
         default:
-          setError("Invalid password.");
+          setError(VALIDATION_MESSAGES.PASSWORD_INVALID);
       }
       setLoading(false);
       return;
@@ -84,14 +84,14 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     const confirmCheck = validateConfirmPassword(password, confirmPassword);
     if (!confirmCheck.valid) {
       switch (confirmCheck.reason) {
-        case "empty":
-          setError("Please confirm your password.");
+        case VALIDATION_REASONS.EMPTY:
+          setError(VALIDATION_MESSAGES.CONFIRM_EMPTY);
           break;
-        case "mismatch":
-          setError("Passwords do not match.");
+        case VALIDATION_REASONS.MISMATCH:
+          setError(VALIDATION_MESSAGES.CONFIRM_MISMATCH);
           break;
         default:
-          setError("Password confirmation failed.");
+          setError(VALIDATION_MESSAGES.CONFIRM_FAILED);
       }
       setLoading(false);
       return;
