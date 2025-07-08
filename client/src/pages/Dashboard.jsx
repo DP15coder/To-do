@@ -5,8 +5,9 @@ import TodoListCard from "../components/todo/TodoListCard";
 import { Plus, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import Footer from "../components/layout/Footer";
 
-const Dashboard = () => {
+  const Dashboard = () => {
   const [todoLists, setTodoLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,7 +32,6 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
-
 
   const handleCreateList = async (e) => {
     e.preventDefault();
@@ -122,7 +122,6 @@ const Dashboard = () => {
     list.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  console.log(filteredLists, "what isinside filterdLists");
 
   if (loading) {
     return (
@@ -139,138 +138,141 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <div className="mt-32">
-        <Toaster position="top-center" />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-semi-bold text-gray-900 mb-4">
-            Todo Builder
-          </h1>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Search todo lists..."
-              />
-            </div>
-
-            <button
-              onClick={() => setShowCreateForm(true)}
-              className="flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Plus className="w-5 h-5" />
-              <span>New List</span>
-            </button>
-          </div>
+      <div className="flex-1 pb-24">
+        <div className="mt-8">
+          <Toaster position="top-center" />
         </div>
 
-        {showCreateForm && (
-          <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <form onSubmit={handleCreateList}>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Create New Todo List
-              </h3>
-              <div className="flex gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-">
+          <div className="mb-8">
+            <h1 className="text-2xl font-semi-bold text-gray-900 mb-4">
+              Todo Builder
+            </h1>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
                   type="text"
-                  value={newListName}
-                  onChange={(e) => {
-                    setNewListName(e.target.value.slice(0, 150));
-                    setErrorMsg("");
-                  }}
-                  maxLength={150}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 break-words truncate"
-                  placeholder="Enter list name..."
-                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Search todo lists..."
                 />
-                <button
-                  type="submit"
-                  disabled={creating || !newListName.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {creating ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  ) : (
-                    "Create"
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCreateForm(false);
-                    setNewListName("");
-                    setErrorMsg("");
-                  }}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
-                >
-                  Cancel
-                </button>
               </div>
-              {errorMsg && (
-                <div className="mt-2 mb-2 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
-                  {errorMsg}
-                </div>
-              )}
-            </form>
-          </div>
-        )}
 
-        {filteredLists.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="mx-auto h-24 w-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <Plus className="h-12 w-12 text-gray-400" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {searchTerm ? "No lists found" : "No todo lists yet"}
-            </h3>
-            <p className="text-gray-600 mb-4">
-              {searchTerm
-                ? "Try adjusting your search terms."
-                : "Create your first todo list to get organized."}
-            </p>
-            {!searchTerm && (
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                <Plus className="w-4 h-4 mr-2" />
-                Create your first list
+                <Plus className="w-5 h-5" />
+                <span>New List</span>
               </button>
-            )}
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredLists.map((list) => (
-              <TodoListCard
-                key={list._id}
-                list={list}
-                onEdit={handleEditList}
-                onDelete={confirmDeleteList}
-                onSelect={(list) => {
-                  window.location.hash = `/todos/${list._id}`;
-                }}
-                style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
-              />
-            ))}
-          </div>
-        )}
-        {editErrorMsg && (
-          <div className="mt-2 mb-2 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
-            {editErrorMsg}
-          </div>
-        )}
+
+          {showCreateForm && (
+            <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <form onSubmit={handleCreateList}>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                  Create New Todo List
+                </h3>
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    value={newListName}
+                    onChange={(e) => {
+                      setNewListName(e.target.value.slice(0, 150));
+                      setErrorMsg("");
+                    }}
+                    maxLength={150}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 break-words truncate"
+                    placeholder="Enter list name..."
+                    style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={creating || !newListName.trim()}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {creating ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      "Create"
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCreateForm(false);
+                      setNewListName("");
+                      setErrorMsg("");
+                    }}
+                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                {errorMsg && (
+                  <div className="mt-2 mb-2 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
+                    {errorMsg}
+                  </div>
+                )}
+              </form>
+            </div>
+          )}
+
+          {filteredLists.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="mx-auto h-24 w-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <Plus className="h-12 w-12 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {searchTerm ? "No lists found" : "No todo lists yet"}
+              </h3>
+              <p className="text-gray-600 mb-4">
+                {searchTerm
+                  ? "Try adjusting your search terms."
+                  : "Create your first todo list to get organized."}
+              </p>
+              {!searchTerm && (
+                <button
+                  onClick={() => setShowCreateForm(true)}
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create your first list
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredLists.map((list) => (
+                <TodoListCard
+                  key={list._id}
+                  list={list}
+                  onEdit={handleEditList}
+                  onDelete={confirmDeleteList}
+                  onSelect={(list) => {
+                    window.location.hash = `/todos/${list._id}`;
+                  }}
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                />
+              ))}
+            </div>
+          )}
+          {editErrorMsg && (
+            <div className="mt-2 mb-2 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
+              {editErrorMsg}
+            </div>
+          )}
+        </div>
       </div>
+      <Footer />
     </div>
   );
 };

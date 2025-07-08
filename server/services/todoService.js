@@ -13,6 +13,8 @@ class TodoService {
       _id: list._id,
       name: list.name,
       user: list.user,
+     created_at: list.created_at,
+
       items: list.items.map((item) => ({
         _id: item._id,
         title: item.title,
@@ -29,6 +31,7 @@ class TodoService {
       _id: list._id,
       name: list.name,
       user: list.user,
+     created_at: list.created_at,
       items: [],
     };
   }

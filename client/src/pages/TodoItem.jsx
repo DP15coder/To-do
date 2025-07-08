@@ -5,6 +5,7 @@ import Header from "../components/layout/Header";
 import TodoItemCard from "../components/todo/TodoItemCard";
 import CreateTodoForm from "../components/todo/CreateTodoItem";
 import { ArrowLeft, Search, Filter, Edit } from "lucide-react";
+import Footer from "../components/layout/Footer";
 
 const TodoItems = () => {
   const { todoId } = useParams();
@@ -117,7 +118,6 @@ useEffect(() => {
       }
     }
   };
-  console.log(todoItems, "what isinsdie setTodoItems");
 
   const handleDeleteItem = async (itemId) => {
     if (!todoId) return;
@@ -182,7 +182,7 @@ useEffect(() => {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20">
         <div className="mb-8">
           <button
             onClick={() => navigate("/")}
@@ -285,7 +285,10 @@ useEffect(() => {
             </div>
           )}
         </div>
+       
       </div>
+            <Footer />
+
     </div>
   );
 };

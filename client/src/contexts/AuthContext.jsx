@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { authService } from "../services/authService";
+
 const AuthContext = createContext({
   user: null,
   login: null,
@@ -40,7 +41,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const response = await authService.login(email, password);
-    console.log(response, "what is the full response");
     const { token, ...user } = response;
 
     localStorage.setItem("token", token);

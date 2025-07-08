@@ -13,6 +13,7 @@ const todoItemSchema = new mongoose.Schema({
 const todoListSchema = new mongoose.Schema({
   name: { type: String, required: true },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  created_at: { type: Date, default: Date.now },
   items: [todoItemSchema],
 });
 

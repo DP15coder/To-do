@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Edit, Trash2, ChevronRight } from "lucide-react";
+import { Edit, Trash2, ChevronRight, Clock, List } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 const TodoListCard = ({ list, onEdit, onDelete, onSelect }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -21,8 +21,9 @@ const TodoListCard = ({ list, onEdit, onDelete, onSelect }) => {
     setIsEditing(false);
   };
 
+
   return (
-    <div className="bg-white-600  rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-white-100  rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
       {isEditing ? (
         <form onSubmit={handleEditSubmit} className="space-y-">
           <input
@@ -50,7 +51,7 @@ const TodoListCard = ({ list, onEdit, onDelete, onSelect }) => {
         </form>
       ) : (
         <>
-          <div className="flex items-start justify-between min-h-[150px]">
+          <div className="flex items-start justify-between min-h-[100px]">
             <div className="flex-1">
               <div className="">
                 <h4 className="font-medium break-all break-words">
@@ -58,6 +59,12 @@ const TodoListCard = ({ list, onEdit, onDelete, onSelect }) => {
                 </h4>
               </div>
 
+              <div className="flex items-center text-xs text-gray-400 mt-2">
+                <List className="w-3 h-3 mr-1" />
+                <div className="text-xs text-gray-500 mb-1">
+                  {list.items?.length || 0} items
+                </div>
+              </div>
               {/* <div className="text-xs text-gray-500 mb-2">
                 {list.description} || No Description is added
               </div> */}
@@ -66,14 +73,14 @@ const TodoListCard = ({ list, onEdit, onDelete, onSelect }) => {
             <div className="flex space-x-2">
               <button
                 onClick={() => setIsEditing(true)}
-                className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                className="p-2 text-gray-400 text-blue-600 transition-colors"
                 title="Edit list"
               >
                 <Edit className="w-4 h-4" />
               </button>
               <button
                 onClick={() => onDelete(list._id)}
-                className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                className="p-2 text-gray-400 text-red-600 transition-colors"
                 title="Delete list"
               >
                 <Trash2 className="w-4 h-4" />
@@ -83,7 +90,7 @@ const TodoListCard = ({ list, onEdit, onDelete, onSelect }) => {
 
           <button
             onClick={() => navigate(`/todos/${list._id}`)}
-            className="mt-4 w-full flex items-center justify-between px-4 py-2 bg-gray-50 border border-blue-500 rounded-lg transition-colors text-left"
+            className="mt-4 w-full flex items-center justify-between px-4 py-2 bg-gray-50 border border-black-500 rounded-lg transition-colors text-left"
           >
             <span className="text-sm font-medium text-gray-700">
               View items
